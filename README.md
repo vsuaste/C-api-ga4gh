@@ -23,8 +23,8 @@ Run examples:
 
   ./library_c --server ga4gh  
   
-This command will give you the "test_ga4gh.vcf" as output.
+This command will give you the "test_ga4gh.vcf" file as output.
 
   ./library_c --server ebi 
   
-This command will give you the "test_ebi.vcf" as output.
+This command will give you the "test_ebi.vcf" file as output.
