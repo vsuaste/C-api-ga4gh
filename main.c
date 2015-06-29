@@ -26,28 +26,41 @@ int main(int argc, char *argv[])
 			case 's' : server = optarg;
 				break;
 			//more option to come for command line utility...
+			//case '?':
+			//	break;
+			default:
+				//show_help_info();
+				printf("info coming...\n");
+				break;
 		}
 	}
 	
-	if(!strcmp(server,"ga4gh"))
+	if(server==NULL)
 	{
-		URL_STRING = "http://localhost/ga4gh/v0.5.1";
-		URL_DATA = "{\"variantSetIds\":[\"1kg-phase1\"], \"callSetIds\":[], \"variantName\":null, \"referenceName\":\"2\", \"start\":33100, \"end\":34000}";
-		output_file = "test_ga4gh.vcf";
-	}else if(!strcmp(server,"ebi"))
-	{
-		URL_STRING ="http://wwwdev.ebi.ac.uk/eva/webservices/rest/v1/ga4gh";
-		URL_DATA ="{\"referenceName\":22, \"start\":25662282, \"end\":25662302}";
-		output_file = "test_ebi.vcf";
-	}else
-	{
-		printf("%s server is not supported. Try ebi or ga4gh options.\n",server);
+		printf("Server name is required...\n");
+		//show_help_info();
 		return 0;
+	}else{
+		
+		if(strcmp(server,"ga4gh")==0)
+		{
+			URL_STRING = "http://localhost/ga4gh/v0.5.1";
+			URL_DATA = "{\"variantSetIds\":[\"1kg-phase1\"], \"callSetIds\":[], \"variantName\":null, \"referenceName\":\"2\", \"start\":33100, \"end\":34000}";
+			output_file = "test_ga4gh.vcf";
+		}else if(strcmp(server,"ebi")==0)
+		{
+			URL_STRING ="http://wwwdev.ebi.ac.uk/eva/webservices/rest/v1/ga4gh";
+			URL_DATA ="{\"referenceName\":22, \"start\":25662282, \"end\":25662302}";
+			output_file = "test_ebi.vcf";
+		}else
+		{
+			printf("%s server is not supported. Try ebi or ga4gh options.\n",server);
+			return 0;
+		}
+
+		data = post_search_variants(URL_STRING,URL_DATA);
+		write_vcf_file(data,output_file);
+		free(data);	
 	}
-	
-	data = post_search_variants(URL_STRING,URL_DATA);
-	write_vcf_file(data,output_file);
-	
-	free(data);	
 	return 0;
 }
