@@ -2,9 +2,13 @@
 
 For compiling and creating shared library:
 
+-Add rapidJson submodule
+
+ *`git submodule add https://github.com/miloyip/rapidjson.git`*
+
 -Compile .cpp wrapper
 
-  *`g++ -c -Wall -Werror -fPIC ga4gh_wrapper.cpp`*
+  *`g++ -c -Wall -Werror -fPIC -I/your_path_directory/rapidjson/include ga4gh_wrapper.cpp`*
   
 -Create shared library
 
