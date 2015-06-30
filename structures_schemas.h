@@ -1,6 +1,6 @@
 /*
- These structures supose to created
- from schemas.
+These structures file it supposed to be created 
+automatically from schemas on the repository.
 */
 
 typedef struct {
