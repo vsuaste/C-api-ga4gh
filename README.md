@@ -16,7 +16,7 @@ For compiling and creating shared library:
   
 -Compile C library and main
 
-  *`gcc -L/your_path_directory -Wall main.c ga4gh_library.c -o library_c -lga4gh -lcurl`*
+  *`gcc -L/your_path_directory -Wall search_variants.c main.c ga4gh_client.c -o library_c -lga4gh -lcurl`*
   
 -Add current directory path to the environment variable LD_LIBRARY_PATH
 
