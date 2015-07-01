@@ -58,7 +58,7 @@ static void usage(FILE *fp)
 int main(int argc, char *argv[])
 {
 	if(argc < 2){usage(stderr); return 1;}
-	char* server_url;
+	char* server_url = "http://localhost/ga4gh/v0.5.1";
 	
 	if(strcmp(argv[1],"--server")==0)
 	{
