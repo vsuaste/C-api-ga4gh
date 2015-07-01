@@ -16,7 +16,7 @@ For compiling and creating shared library:
   
 -Compile C library and main
 
-  *`gcc -L/your_path_directory -Wall main.c ga4gh_library.c -o library_c -lga4gh -lcurl`*
+  *`gcc -L/your_path_directory -Wall search_variants.c main.c ga4gh_client.c -o ga4gh-tools -lga4gh -lcurl`*
   
 -Add current directory path to the environment variable LD_LIBRARY_PATH
 
@@ -25,10 +25,10 @@ For compiling and creating shared library:
   
 Run examples:
 
-  *`./library_c --server ga4gh`*  
+  *`./ga4gh-tools --server ga4gh --variantSetIds 1kg-phase1 -referenceName 2 -s 33100 -e 34000`*  
   
-This command will give you the "test_ga4gh.vcf" file as output.
+This command will give you the "1kg-phase1.vcf" file as output.
 
-  *`./library_c --server ebi`* 
+  *`./ga4gh-tools --help`* 
   
-This command will give you the "test_ebi.vcf" file as output.
+This command will display information about how to use the tool.
