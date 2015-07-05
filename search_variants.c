@@ -173,6 +173,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 	int size_variants = 0;
 	int size_calls = 0;
 	request->name = "null";
+	char debug = 0;
 	
 	static struct option long_options[]={
 		{"variantSetIds",required_argument,0,'v'},
@@ -181,10 +182,11 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 		{"end",required_argument,0,'e'},
 		{"callSetIds",optional_argument,0,'c'},
 		{"variantName",optional_argument,0,'n'},
+		{"debug",no_argument,0,'d'},
 		{0,0,0,0}
 	};
 	//if(argc < 2)
-	while((cmd=getopt_long(argc,argv,"v:r:s:e:cn",long_options,NULL))!=-1)
+	while((cmd=getopt_long(argc,argv,"v:r:s:e:cnd",long_options,NULL))!=-1)
 	{
 		switch(cmd)
 		{
@@ -235,6 +237,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 					  	}
 					break;
 			case 'n': request->name = optarg; break;
+			case 'd': debug = 1; break;
 			case '?': usage();
 			default: error("Unknown argument %s\n",optarg);
 		}
@@ -260,7 +263,10 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 		
 		write_vcf_file(user->response,vcf_file_name);
 		
-		//printf("%s\n",user->response);
+		if(debug)
+		{
+		printf("%s\n",user->response);
+		}
 	}
 	end_user();
 	return 0;
