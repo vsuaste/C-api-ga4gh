@@ -25,10 +25,13 @@ For compiling and creating shared library:
   
 Run examples:
 
-  *`./ga4gh-tools --server ga4gh --variantSetIds 1kg-phase1 -referenceName 2 -s 33100 -e 34000`*  
+  *`./ga4gh-tools --server ga4gh search_variants --variantSetIds 1kg-phase1 --referenceName 2 -s 33100 -e 34000`*  
   
 This command will give you the "1kg-phase1.vcf" file as output.
 
   *`./ga4gh-tools --help`* 
   
 This command will display information about how to use the tool.
+
+For now if you add *` -d `* argument with any command, it will print the query response on console.
+Done for debugging purposes.
