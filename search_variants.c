@@ -129,7 +129,7 @@ static int create_vcf_file(char* name_vcf)
 	output_file = fopen(name_vcf,"w");
 	//write header
 	fprintf(output_file,"##fileformat=VCFv4.1\n");
- 	fprintf(output_file,"#CHROM \t POS \t ID \t REF \t ALT \t QUAL \t FILTER \t INFO \t FORMAT \n");	
+ 	fprintf(output_file,"#CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO\tFORMAT\n");	
 	
 	fclose(output_file);
 	return 0;
@@ -140,9 +140,11 @@ static int write_vcf_file(char* response,char* name_vcf)
 	FILE *output_file;
 	
 	int i = 0;
+	int j = 0;
 	int size = 0;
-	Variant v;
-	
+	int size_info,size_alt;
+	Variant *v = (Variant*)malloc(1*sizeof(Variant));
+
 	my_parse(response);
 	my_set_variants();
 	size = my_variants_size();
@@ -150,14 +152,49 @@ static int write_vcf_file(char* response,char* name_vcf)
 	output_file = fopen(name_vcf,"a");
 	for(i=0; i<size; i++)
 	{
-		my_get_variant(i,&v);
-
-		fprintf(output_file,"%s \t",v.referenceName);
-		fprintf(output_file,"%ld \t",v.start);
-		fprintf(output_file,"%s \t",v.id);
-		fprintf(output_file,"%s \t",v.referenceBases);
+		size_info =  get_info_size(i);
+		size_alt = get_alt_size(i);
+		
+		my_get_variant(i,v);
+		
+		fprintf(output_file,"%s\t",v->referenceName);
+		fprintf(output_file,"%ld\t",v->start);
+		fprintf(output_file,"%s\t",v->id);
+		fprintf(output_file,"%s\t",v->referenceBases);
+		fprintf(output_file,"%s",v->alternateBases[0]);
+		for(j=1; j<size_alt; j++)
+		{
+			fprintf(output_file,",%s",v->alternateBases[j]);
+		}
+		fprintf(output_file,"\t");
+		fprintf(output_file,".\t");
+		fprintf(output_file,"PASS\t");
+		//consider case size_info = 0 ?
+		fprintf(output_file,"%s",v->info_key[0]);
+		fprintf(output_file,"=%s",v->info_value[0]);
+		for(j = 1; j< size_info; j++)
+		{
+			fprintf(output_file,";%s",v->info_key[j]);
+			fprintf(output_file,"=%s",v->info_value[j]);
+		}
+		fprintf(output_file,"\t");
 		
 		fprintf(output_file,"\n");
+		
+		if(v->info_key!=NULL)
+		{
+		free(v->info_key);
+		}
+		
+		if(v->info_value)
+		{
+		free(v->info_value);
+		}
+		
+		if(v->alternateBases!=NULL)
+		{
+		free(v->alternateBases);
+		}
 	}
 
 	fclose(output_file);		

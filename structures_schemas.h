@@ -11,7 +11,8 @@ typedef struct {
 	long end;
 	char * id;
 	//wrong type
-	int info;
+	char** info_key;
+	char** info_value;
 	char** names;
 	char* referenceBases;
 	char* referenceName;
