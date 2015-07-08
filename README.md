@@ -1,4 +1,4 @@
-# testing_rapidJson
+# C ga4gh api
 
 For compiling and creating shared library:
 
