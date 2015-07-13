@@ -76,7 +76,8 @@ int main(int argc, char *argv[])
 			{
 				server_url ="http://wwwdev.ebi.ac.uk/eva/webservices/rest/v1/ga4gh";
 			}else{
-				error("%s server is not supported. Try ebi or ga4gh options.\n",argv[2]);
+				server_url =argv[2];
+				//error("%s server is not supported. Try ebi or ga4gh options.\n",argv[2]);
 			}
 
 			argv+=2;

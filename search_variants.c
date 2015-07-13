@@ -109,7 +109,7 @@ static char* create_request_string(search_variant_request* request,int id,int si
 	strcat(request_string,",\"end\":");
 	strcat(request_string,request_end);
 	strcat(request_string,"}");
-	
+	//printf("request string: %s\n",request_string);
 	return request_string;
 }
 
@@ -149,6 +149,8 @@ static int write_vcf_file(char* response,char* name_vcf)
 	my_set_variants();
 	size = my_variants_size();
 	
+	
+	
 	output_file = fopen(name_vcf,"a");
 	for(i=0; i<size; i++)
 	{
@@ -170,15 +172,20 @@ static int write_vcf_file(char* response,char* name_vcf)
 		fprintf(output_file,".\t");
 		fprintf(output_file,"PASS\t");
 		//consider case size_info = 0 ?
-		fprintf(output_file,"%s",v->info_key[0]);
-		fprintf(output_file,"=%s",v->info_value[0]);
-		for(j = 1; j< size_info; j++)
+		if(size_info!=-1)
 		{
-			fprintf(output_file,";%s",v->info_key[j]);
-			fprintf(output_file,"=%s",v->info_value[j]);
+			fprintf(output_file,"%s",v->info_key[0]);
+			fprintf(output_file,"=%s",v->info_value[0]);
+			for(j = 1; j< size_info; j++)
+			{
+				fprintf(output_file,";%s",v->info_key[j]);
+				fprintf(output_file,"=%s",v->info_value[j]);
+			}
+		}else{
+		
+			fprintf(output_file,".");
 		}
 		fprintf(output_file,"\t");
-		
 		fprintf(output_file,"\n");
 		
 		if(v->info_key!=NULL)
@@ -290,6 +297,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 	//process each variantSet
 	for(i=0; i<size_variants; i++)
 	{
+
 		vcf_file_name = get_variantSetId_vcf_name(request,i);
 		
 		create_vcf_file(vcf_file_name);		
@@ -299,11 +307,11 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 		client_search_request(user,"variants");
 		
 		write_vcf_file(user->response,vcf_file_name);
-		
 		if(debug)
 		{
 		printf("%s\n",user->response);
 		}
+
 	}
 	end_user();
 	return 0;

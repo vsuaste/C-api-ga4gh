@@ -113,6 +113,9 @@ int client_search_request(client_t* self,const char* protocol)
 	if(result != CURLE_OK)
 	{
 		//error
+		printf("No OK curl \n");
+		char *error = (char*) curl_easy_strerror(result);
+		printf("%s \n",error);
 		return 1;
 	}
 	self->response[self->response_length]='\0';

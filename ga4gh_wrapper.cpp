@@ -29,9 +29,17 @@ int my_variants_size()
 	
 int get_info_size(int id)
 {
-	Value &info = variants[id]["info"];
-	int size = info.MemberEnd() - info.MemberBegin() ;
-	return size;
+	//Value &info = variants[id]["info"];
+	Value::ConstMemberIterator info = variants[id].FindMember("info");
+	if(info != variants[id].MemberEnd())
+	{
+	int size = info->value.MemberEnd() - info->value.MemberBegin() ;
+		return size;
+	}else{
+		//means no info field was found (for ensembl case)
+		return -1;
+	}
+	return 0;
 }
 
 int get_alt_size(int id)
@@ -55,47 +63,46 @@ static int set_alt(int id, Variant *v)
 	
 static int set_info(int id, Variant *v)
 {
-	Value &info = variants[id]["info"];
-	Value info_v;
-	unsigned int i,j;
-	int size_info = get_info_size(id);
-	std::string info_val;
-	v->info_key = (char**)malloc(size_info*sizeof(char*));
-	v->info_value = (char**)malloc(size_info*sizeof(char*));
-	/* 
-	for(rapidjson::Value::ConstMemberIterator it=membersArray.MemberBegin(); it != membersArray.MembersEnd(); it++) {
-   std::cout << it->value["template"].GetString();
-   */
-	if(v->info_key!=NULL && v->info_value!=NULL)
+	//Value &info = variants[id]["info"];
+	Value::ConstMemberIterator info = variants[id].FindMember("info");
+	if(info != variants[id].MemberEnd())
 	{
-		i = 0;
-		for(Value::ConstMemberIterator it=info.MemberBegin(); it != info.MemberEnd(); it++)
+		Value info_v;
+		Value::ConstValueIterator it_info_v;	
+		unsigned int i;//j;
+		int size_info = info->value.MemberEnd() - info->value.MemberBegin() ;
+		std::string info_val;
+
+		v->info_key = (char**)malloc(size_info*sizeof(char*));
+		v->info_value = (char**)malloc(size_info*sizeof(char*));
+		if(v->info_key!=NULL && v->info_value!=NULL)
 		{
-			 info_v = info[it->name];
-			 v->info_key[i] = (char*)(it->name.GetString());
-			if(info_v.Size()==1)
+			i = 0;
+			for(Value::ConstMemberIterator it=info->value.MemberBegin(); it != info->value.MemberEnd(); it++)
 			{
-				v->info_value[i] = (char*)info_v[0].GetString();
-			}else{
+				v->info_key[i] = (char*)(it->name.GetString());
 				info_val="";
-				for(j=0; j<info_v.Size(); j++)
+				it_info_v = it->value.Begin();	 
+				while(it_info_v != it->value.End())
 				{
-					info_val+= info_v[j].GetString();
+					info_val+= it_info_v->GetString();
 					info_val+= ",";
+					it_info_v++;
 				}
 				info_val[info_val.length()-1]='\0';
 				v->info_value[i] = (char*) malloc(info_val.length());
 				strcpy(v->info_value[i],info_val.c_str());
+				i++;
 			}
-			i++;
+
+		}else{
+
+			return 1; //memory error
 		}
-		
-	}else{
-	
-		return 1; //error
+	}else
+	{
+		//printf("Response query doesn't have info field \n");
 	}
-	
-	//printf("info size of variant %d is %d \n",id,size);
 	
 	return 0;
 }
