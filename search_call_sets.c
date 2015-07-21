@@ -146,7 +146,7 @@ int main_searchcallSets(int argc, char* argv[],char *server_url)
 	
 	user->post_fields = create_request_string(request,size_variants);
 	client_search_request(user,"callsets");
-	//printf("%s\n",user->response);
+	printf("%s\n",user->response);
 	if(debug)
 	{
 	printf("%s\n",user->response);
