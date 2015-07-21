@@ -112,7 +112,7 @@ int my_get_variant(int id, Variant *v)
 		v->referenceName = (char*)variants[id]["referenceName"].GetString();
 		v->id = (char*)variants[id]["id"].GetString();
 		v->referenceBases = (char*)variants[id]["referenceBases"].GetString();
-		v->start = variants[id]["start"].GetInt();	
+		v->start = variants[id]["start"].GetInt();
 		set_alt(id,v);
 		set_info(id,v);	
 	return 0;

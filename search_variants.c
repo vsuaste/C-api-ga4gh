@@ -59,9 +59,10 @@ static char* create_request_string(search_variant_request* request,int id,int si
 	char request_end[20];
 	char* variant_name;
 	//compute size of request_string
-	int size = 107; //default characters
+	int size = 127; //default characters
 	int i=0;
 	size+=strlen(request->variantSetIds[id]);
+	size+=strlen(request->name);
 	size+= 5*size_call;
 	for(i=0; i<size_call;i++)
 	{
@@ -75,8 +76,6 @@ static char* create_request_string(search_variant_request* request,int id,int si
 	size+=strlen(request_end);
 	
 	request_string = malloc(size);
-	
-
 	
 	if(strcmp(request->name,"null")==0)
 	{
@@ -108,6 +107,8 @@ static char* create_request_string(search_variant_request* request,int id,int si
 	strcat(request_string,request_start);
 	strcat(request_string,",\"end\":");
 	strcat(request_string,request_end);
+	strcat(request_string,",\"pageToken\":");
+	strcat(request_string,request->pageToken);
 	strcat(request_string,"}");
 	//printf("request string: %s\n",request_string);
 	return request_string;
@@ -208,7 +209,6 @@ static int write_vcf_file(char* response,char* name_vcf)
 	return 0;
 }
 
-
 int main_searchvariants(int argc, char* argv[],char *server_url)
 {
 	int cmd;
@@ -217,6 +217,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 	int size_variants = 0;
 	int size_calls = 0;
 	request->name = "null";
+	request->pageToken ="null";
 	char debug = 0;
 	
 	static struct option long_options[]={
@@ -301,17 +302,13 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 		vcf_file_name = get_variantSetId_vcf_name(request,i);
 		
 		create_vcf_file(vcf_file_name);		
-		
 		user->post_fields = create_request_string(request,i,size_calls);
-		
 		client_search_request(user,"variants");
-		
 		write_vcf_file(user->response,vcf_file_name);
 		if(debug)
 		{
-		printf("%s\n",user->response);
+			printf("%s\n",user->response);
 		}
-
 	}
 	end_user();
 	return 0;

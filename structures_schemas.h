@@ -31,3 +31,12 @@ typedef struct {
 	char** callSetIds;
 	char** variantSetIds;
 }search_variant_request;
+
+typedef struct {
+	char **variantSetIds;
+	char* name;
+	int pageSize;
+	char* pageToken;
+}search_callSets_request;
+
+

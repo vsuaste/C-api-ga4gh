@@ -2,6 +2,7 @@
 #include "getopt.h"
 
 int main_searchvariants(int argc, char* argv[],char* server_url);
+int main_searchcallSets(int argc, char* argv[],char *server_url);
 
 typedef struct
 {
@@ -19,6 +20,10 @@ static cmd_t cmds[]=
 		.alias = "search_variants",
 	 	.help = "Gets a list of variants matching the search criteria."
 	},
+	{	.func = main_searchcallSets,
+		.alias = "search_callSets",
+	 	.help = "Gets a list of call sets matching the search criteria."
+	},		
 	/*
 	more commands, one for each protocol
 	*/
