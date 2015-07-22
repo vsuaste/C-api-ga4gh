@@ -10,7 +10,7 @@ static void usage(void)
 	fprintf(stderr, "\n");
 	fprintf(stderr, "Optional arguments:\n");
 	fprintf(stderr, "--variantSetIds -v  <id1,id2,...>       If specified, will restrict the query to call sets.\n");
- 	fprintf(stderr, "										 within the given variants sets.\n");
+ 	fprintf(stderr, "                                        within the given variants sets.\n");
 	fprintf(stderr, "--name	-n           <string>            Only return call sets for which a substring of the\n");
 	fprintf(stderr, "                                        name matches this string.\n");
 	fprintf(stderr, "\n");

@@ -89,7 +89,8 @@ int client_search_request(client_t* self,const char* protocol)
 	char * complete_url;
 	size_t url_len;
 	CURLcode result;
-	
+	//restart client
+	self->response_length = 0;
 	//strlen("/search") = 7
 	url_len = strlen(self->base_url) + strlen(protocol) + 8;
 	complete_url = malloc(url_len);

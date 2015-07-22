@@ -11,6 +11,7 @@ int my_get_variant(int id,Variant *v);
 int my_variants_size();
 int get_info_size(int id);
 int get_alt_size(int id);	
+char* get_pageToken(void);	
 #ifdef __cplusplus	
 }
 #endif

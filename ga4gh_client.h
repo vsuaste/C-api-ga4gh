@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#define BUFFER_SIZE (1200 * 1024) //1.2 MB
+#define BUFFER_SIZE (2000 * 1024) //2 MB
 
 typedef struct{
 	CURL* curl;

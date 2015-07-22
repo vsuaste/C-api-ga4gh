@@ -298,16 +298,22 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 	//process each variantSet
 	for(i=0; i<size_variants; i++)
 	{
-
-		vcf_file_name = get_variantSetId_vcf_name(request,i);
 		
-		create_vcf_file(vcf_file_name);		
-		user->post_fields = create_request_string(request,i,size_calls);
-		client_search_request(user,"variants");
-		write_vcf_file(user->response,vcf_file_name);
-		if(debug)
+		vcf_file_name = get_variantSetId_vcf_name(request,i);
+		create_vcf_file(vcf_file_name);	
+		
+		while(strcmp(request->pageToken,"NULL")!=0)
 		{
-			printf("%s\n",user->response);
+			user->post_fields = create_request_string(request,i,size_calls);
+			//printf("post field string: %s \n",user->post_fields);
+			client_search_request(user,"variants");
+			write_vcf_file(user->response,vcf_file_name);
+			request->pageToken = get_pageToken();
+			//printf("%s \n",request->pageToken);
+			if(debug)
+			{
+				printf("%s\n",user->response);
+			}
 		}
 	}
 	end_user();

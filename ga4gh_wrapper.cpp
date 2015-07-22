@@ -118,7 +118,22 @@ int my_get_variant(int id, Variant *v)
 	return 0;
 }
 	
-
+char* get_pageToken(void)
+{
+	Value& pageToken_v = document["nextPageToken"];
+	char* pageToken;
+	
+	if(pageToken_v.IsNull())
+	{
+		//printf("es null...\n");	
+		pageToken=(char*)"NULL";
+	}else
+	{
+		pageToken = (char*)pageToken_v.GetString();
+	}
+	
+	return pageToken;
+}
 	
 }	
 
