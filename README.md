@@ -16,7 +16,7 @@ For compiling and creating shared library:
   
 -Compile C library and main
 
-  *`gcc -L/your_path_directory -Wall search_variants.c main.c ga4gh_client.c -o ga4gh-tools -lga4gh -lcurl`*
+  *`gcc -L/your_path_directory -Wall search_variants.c search_call_sets.c main.c ga4gh_client.c -o ga4gh-tools -lga4gh -lcurl`*
   
 -Add current directory path to the environment variable LD_LIBRARY_PATH
 
@@ -25,13 +25,18 @@ For compiling and creating shared library:
   
 Run examples:
 
-  *`./ga4gh-tools --server ga4gh search_variants --variantSetIds 1kg-phase1 --referenceName 2 -s 33100 -e 34000`*  
-  
-This command will give you the "1kg-phase1.vcf" file as output.
+- This command will give you the "1kg-phase1.vcf" file as output.
 
-  *`./ga4gh-tools --help`* 
+  *`./ga4gh-tools --server ga4gh search_variants --variantSetIds 1kg-phase1 --referenceName 2 -s 33100 -e 34000`* 
+
+- This command will display information about how to use the tool.
   
-This command will display information about how to use the tool.
+*`./ga4gh-tools --help`* 
+- callSets :
+
+*`./ga4gh-tools --server ga4gh search_callSets --variantSetIds 1kg-phase1`*
+
+*`./ga4gh-tools --server ebi search_callSets --variantSetIds EVAF00000003,EVAF00000004`*
 
 For now if you add *` -d `* argument with any command, it will print the query response on console.
 Done for debugging purposes.
