@@ -91,6 +91,22 @@ static char* create_request_string(search_variant_request* request,int id,int si
 	strcpy(request_string,"{\"variantSetIds\":[\"");
 	strcat(request_string,request->variantSetIds[id]);
 	strcat(request_string,"\"],\"callSetIds\":[");
+	
+	if(size_call > 0)
+	{
+		
+		strcat(request_string,"\"");
+		strcat(request_string,request->callSetIds[0]);
+		strcat(request_string,"\"");
+		for(i=1; i<size_call; i++)
+		{
+			strcat(request_string,",\"");
+			strcat(request_string,request->callSetIds[i]);
+			strcat(request_string,"\"");
+		}	
+	}
+	
+	/*
 	for(i=0; i<size_call; i++)
 	{
 		strcat(request_string,"\"");
@@ -98,7 +114,7 @@ static char* create_request_string(search_variant_request* request,int id,int si
 		strcat(request_string,"\",");
 		//extra ',' at the end, need to fix it....
 	}
-
+	*/
 	strcat(request_string,"],\"variantName\":");
 	strcat(request_string,variant_name);
 	strcat(request_string,",\"referenceName\":\"");
@@ -150,8 +166,6 @@ static int write_vcf_file(char* response,char* name_vcf)
 	my_set_variants();
 	size = my_variants_size();
 	
-	
-	
 	output_file = fopen(name_vcf,"a");
 	for(i=0; i<size; i++)
 	{
@@ -173,7 +187,8 @@ static int write_vcf_file(char* response,char* name_vcf)
 		fprintf(output_file,".\t");
 		fprintf(output_file,"PASS\t");
 		//consider case size_info = 0 ?
-		if(size_info!=-1)
+
+		if(size_info!=0&&size_info!=-1)
 		{
 			fprintf(output_file,"%s",v->info_key[0]);
 			fprintf(output_file,"=%s",v->info_value[0]);
@@ -194,7 +209,7 @@ static int write_vcf_file(char* response,char* name_vcf)
 		free(v->info_key);
 		}
 		
-		if(v->info_value)
+		if(v->info_value!=NULL)
 		{
 		free(v->info_value);
 		}
@@ -204,7 +219,6 @@ static int write_vcf_file(char* response,char* name_vcf)
 		free(v->alternateBases);
 		}
 	}
-
 	fclose(output_file);		
 	return 0;
 }
@@ -225,13 +239,13 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 		{"referenceName",required_argument,0,'r'},
 		{"start",required_argument,0,'s'},
 		{"end",required_argument,0,'e'},
-		{"callSetIds",optional_argument,0,'c'},
-		{"variantName",optional_argument,0,'n'},
+		{"callSetIds",required_argument,0,'c'},
+		{"variantName",required_argument,0,'n'},
 		{"debug",no_argument,0,'d'},
 		{0,0,0,0}
 	};
 	//if(argc < 2)
-	while((cmd=getopt_long(argc,argv,"v:r:s:e:cnd",long_options,NULL))!=-1)
+	while((cmd=getopt_long(argc,argv,"v:r:s:e:c:n:d",long_options,NULL))!=-1)
 	{
 		switch(cmd)
 		{
@@ -250,7 +264,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 			case 'r':
 					if(optarg==NULL||(strcmp(optarg,"")==0))
 						{
-							error("--refereName string can't be empty.\n");				
+							error("--referenceName string can't be empty.\n");				
 						}
 					  else
 						{
@@ -307,6 +321,7 @@ int main_searchvariants(int argc, char* argv[],char *server_url)
 			user->post_fields = create_request_string(request,i,size_calls);
 			//printf("post field string: %s \n",user->post_fields);
 			client_search_request(user,"variants");
+			//printf("%s\n",user->response);
 			write_vcf_file(user->response,vcf_file_name);
 			request->pageToken = get_pageToken();
 			//printf("%s \n",request->pageToken);

@@ -109,27 +109,20 @@ int main_searchcallSets(int argc, char* argv[],char *server_url)
 	
 	static struct option long_options[]={
 		{"variantSetIds",required_argument,0,'v'},
-		{"name",optional_argument,0,'n'},
+		{"name",required_argument,0,'n'},
 		{"debug",no_argument,0,'d'},
 		{0,0,0,0}
 	};
 	//if(argc < 2)
-	while((cmd=getopt_long(argc,argv,"v:nd",long_options,NULL))!=-1)
+	while((cmd=getopt_long(argc,argv,"v:n:d",long_options,NULL))!=-1)
 	{
 		switch(cmd)
 		{
 			case 'v':
-					if(optarg==NULL||(strcmp(optarg,"")==0))
-						{
-							error("--variantSetIds string can't be empty.\n");	
-						}
-					  else
-						{
-							size_variants = count_ids(optarg);
-						 	request->variantSetIds = (char**)malloc(size_variants*sizeof(char*));
-							set_ids(optarg,request->variantSetIds,size_variants);
-						}
-						break;
+					size_variants = count_ids(optarg);
+					request->variantSetIds = (char**)malloc(size_variants*sizeof(char*));
+					set_ids(optarg,request->variantSetIds,size_variants);
+					break;
 			case 'n': request->name = optarg; break;
 			case 'd': debug = 1; break;
 			case '?': usage();
@@ -137,14 +130,16 @@ int main_searchcallSets(int argc, char* argv[],char *server_url)
 		}
 	}
 	
+	/*
 	if(size_variants==0)
 	{
 		usage();
 	}
-	
+	*/
 	start_user(server_url);
 	
 	user->post_fields = create_request_string(request,size_variants);
+	//printf("%s\n",user->post_fields);
 	client_search_request(user,"callsets");
 	printf("%s\n",user->response);
 	if(debug)
