@@ -40,3 +40,12 @@ typedef struct {
 }search_callSets_request;
 
 
+typedef struct {
+	char** readGroupIds;
+	char* referenceName;
+	char* referenceId;
+	long int start;
+	long int end;
+	int pageSize;
+	char* pageToken;
+}search_reads_request;

@@ -2,6 +2,7 @@
 #include "getopt.h"
 
 int main_searchvariants(int argc, char* argv[],char* server_url);
+int main_searchreads(int argc, char* argv[],char* server_url);
 int main_searchcallSets(int argc, char* argv[],char *server_url);
 
 typedef struct
@@ -23,6 +24,10 @@ static cmd_t cmds[]=
 	{	.func = main_searchcallSets,
 		.alias = "search_callSets",
 	 	.help = "Gets a list of call sets matching the search criteria."
+	},
+	{	.func = main_searchreads,
+		.alias = "search_reads",
+	 	.help = "Gets a list of reads aligments matching the search criteria"
 	},		
 	/*
 	more commands, one for each protocol
@@ -57,6 +62,7 @@ static void usage(FILE *fp)
 	}
 	fprintf(fp,"\n");
 	fprintf(fp,"For more info about each command use --help option before the command.\n");
+	fprintf(fp,"\n");
 }
 
 
