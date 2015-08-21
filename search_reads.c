@@ -106,8 +106,9 @@ static char* create_request_string(search_reads_request* request,int id)
 
 	strcpy(request_string,"{\"readGroupIds\":[\"");
 	strcat(request_string,request->readGroupIds[id]);
-	strcat(request_string,"\"],\"referenceName\":");
+	strcat(request_string,"\"],\"referenceName\":\"");
 	strcat(request_string,request->referenceName);
+	strcat(request_string,"\"");
 	strcat(request_string,",\"referenceId\":");
 	strcat(request_string,request->referenceId);
 	strcat(request_string,",\"start\":");
