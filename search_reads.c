@@ -82,18 +82,15 @@ static char* create_request_string(search_reads_request* request,int id)
 		strcat(request_pageToken,"\"");
 	}
 	
-	printf("paso 4 \n");
 	size+=strlen(request_start);
 	size+=strlen(request_end);
-	printf("paso 4.1.1 \n");
 	size+=strlen(request->referenceName);
 	size+=strlen(request->referenceId);
-	printf("paso 4.1 \n");
 	size+=strlen(request->readGroupIds[id]);
 	size+=strlen(request->pageToken);
 	
 	request_string = malloc(size);
-	printf("size: %d \n",size);
+
 	if(request_string == NULL)
 	{
 		printf("memory error \n");
@@ -106,8 +103,9 @@ static char* create_request_string(search_reads_request* request,int id)
 
 	strcpy(request_string,"{\"readGroupIds\":[\"");
 	strcat(request_string,request->readGroupIds[id]);
-	strcat(request_string,"\"],\"referenceName\":");
+	strcat(request_string,"\"],\"referenceName\":\"");
 	strcat(request_string,request->referenceName);
+	strcat(request_string,"\"");
 	strcat(request_string,",\"referenceId\":");
 	strcat(request_string,request->referenceId);
 	strcat(request_string,",\"start\":");
@@ -158,11 +156,8 @@ int main_searchreads(int argc, char* argv[],char *server_url)
 					  else
 						{
 							size_reads = count_ids(optarg);
-						  	printf("size reads: %d \n",size_reads);
 						 	request->readGroupIds = (char**)malloc(size_reads*sizeof(char*));
-						  	printf("paso 1 \n");
 							set_ids(optarg,request->readGroupIds,size_reads);
-						  	printf("paso 2 \n");
 						}
 						break;
 			case 'n':
@@ -223,9 +218,8 @@ int main_searchreads(int argc, char* argv[],char *server_url)
 		
 		//while(strcmp(request->pageToken,"NULL")!=0)
 		//{
-			printf("paso 3 \n");
 			user->post_fields = create_request_string(request,i);
-			printf("post field string: %s \n",user->post_fields);
+			//printf("post field string: %s \n",user->post_fields);
 			client_search_request(user,"reads");
 			printf("%s\n",user->response);
 			my_parse(user->response);

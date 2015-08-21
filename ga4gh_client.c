@@ -87,6 +87,7 @@ int client_free(client_t* self)
 int client_search_request(client_t* self,const char* protocol)
 {
 	char * complete_url;
+	char *query;
 	size_t url_len;
 	CURLcode result;
 	//restart client
@@ -101,11 +102,18 @@ int client_search_request(client_t* self,const char* protocol)
 		return 1;
 	}
 	
-	strcpy(complete_url,self->base_url);
+	query = strchr(self->base_url, '?');
+	if (query)
+	    strncpy(complete_url, self->base_url, query - self->base_url);
+	else
+	    strcpy(complete_url, self->base_url);
+
 	strcat(complete_url,"/");
 	strcat(complete_url,protocol);
 	strcat(complete_url,"/search");
-	
+
+	if (query) strcat(complete_url, query);
+
 	curl_easy_setopt(self->curl,CURLOPT_URL, complete_url);
 	curl_easy_setopt(self->curl,CURLOPT_POSTFIELDS, self->post_fields);
 	curl_easy_setopt(self->curl,CURLOPT_POSTFIELDSIZE, strlen(self->post_fields));
