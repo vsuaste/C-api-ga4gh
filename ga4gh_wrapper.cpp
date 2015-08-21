@@ -5,6 +5,7 @@
 using namespace rapidjson;
 Document document;	
 Value variants;
+Value callSets;
 
 extern "C"
 {
@@ -137,3 +138,23 @@ char* get_pageToken(void)
 	
 }	
 
+int my_set_callSets()
+{
+	callSets = document["callSets"];
+	return 0;
+}	
+
+int callSets_size()
+{
+	return callSets.Size();
+}
+
+int get_names_callSets(int size_callSets,char** callSets_name)
+{
+	int i=0;
+	for(i=0; i<size_callSets; i++)
+	{
+		callSets_name[i] = (char*)callSets[i]["name"].GetString();
+	}
+	return 0;
+}

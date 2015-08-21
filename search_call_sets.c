@@ -99,6 +99,28 @@ static void set_ids(char *setIds, char**request_, int size)
 	}
 }
 
+static int print_callSets()
+{
+	int size_callSets = 0;
+	int i = 0;
+	char** callSets_name;
+	
+	my_parse(user->response);
+	my_set_callSets();
+	size_callSets = callSets_size();
+	
+	callSets_name = malloc(size_callSets*sizeof(char*));
+	
+	get_names_callSets(size_callSets,callSets_name);
+
+	for(i=0; i<size_callSets; i++)
+	{
+		printf("%s\n",callSets_name[i]);
+	}
+	
+	return 0;
+}
+
 int main_searchcallSets(int argc, char* argv[],char *server_url)
 {
 	int cmd;
@@ -141,7 +163,7 @@ int main_searchcallSets(int argc, char* argv[],char *server_url)
 	user->post_fields = create_request_string(request,size_variants);
 	//printf("%s\n",user->post_fields);
 	client_search_request(user,"callsets");
-	printf("%s\n",user->response);
+	print_callSets();
 	if(debug)
 	{
 	printf("%s\n",user->response);
