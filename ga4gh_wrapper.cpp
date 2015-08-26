@@ -6,10 +6,33 @@ using namespace rapidjson;
 Document document;	
 Value variants;
 Value callSets;
+Value alignments;
 
 extern "C"
 {
-
+const char* operations_name[]={
+	"ALIGNMENT_MATCH",
+	"INSERT",
+	"DELETE",
+	"SKIP",
+	"CLIP_SOFT",
+	"CLIP_HARD",
+	"PAD",
+	"SEQUENCE_MATCH",
+	"SEQUENCE_MISMATCH"
+};
+	
+const char operations_char[]={
+	'M',
+	'I',
+	'D',
+	'N',
+	'S',
+	'H',
+	'P',
+	'=',
+	'X'		
+};
 int my_parse(char *data)
 {
 	//int i;
@@ -17,13 +40,13 @@ int my_parse(char *data)
 	return 0; //can set errors...
 }
 	
-int my_set_variants()
+int my_set_variants(void)
 {
 	variants = document["variants"];
 	return 0;
 }	
 	
-int my_variants_size()
+int my_variants_size(void)
 {
 	return variants.Size();
 }
@@ -138,13 +161,13 @@ char* get_pageToken(void)
 	
 }	
 
-int my_set_callSets()
+int my_set_callSets(void)
 {
 	callSets = document["callSets"];
 	return 0;
 }	
 
-int callSets_size()
+int callSets_size(void)
 {
 	return callSets.Size();
 }
@@ -157,4 +180,114 @@ int get_names_callSets(int size_callSets,char** callSets_name)
 		callSets_name[i] = (char*)callSets[i]["name"].GetString();
 	}
 	return 0;
+}
+
+int my_set_alignments(void)
+{
+	alignments = document["alignments"];
+	return 0;
+}
+
+int my_alignments_size(void)
+{
+	return alignments.Size();
+}
+
+int get_alignment(int id, read_alignment* r, int cigar_size)
+{	
+
+	r->fragmentName = (char*)alignments[id]["fragmentName"].GetString();
+	r->referenceName = (char*)alignments[id]["alignment"]["position"]["referenceName"].GetString();
+	r->position = (unsigned long long)alignments[id]["alignment"]["position"]["position"].GetUint64();
+	r->mappingQuality = alignments[id]["alignment"]["mappingQuality"].GetInt();
+	r->nextMateReferenceName = (char*)alignments[id]["nextMatePosition"]["referenceName"].GetString();
+	r->nextMatePosition = (unsigned long long) alignments[id]["nextMatePosition"]["position"].GetUint64();
+	r->fragmentLength = alignments[id]["fragmentLength"].GetInt();
+	r->alignedSequence = (char*)alignments[id]["alignedSequence"].GetString();
+	r->alignedQuality = get_alignedQuality(id);
+	get_cigar(id,r->operation,r->lengthOperation,cigar_size);
+	return 0;
+}
+
+char* get_alignedQuality(int id)
+{
+	int size_seq = alignments[id]["alignedQuality"].Size();
+	int i=0;
+	char *string_quality =(char*)malloc((size_seq+1));
+	
+	for(i=0; i<size_seq; i++)
+	{
+		string_quality[i] = (char)(alignments[id]["alignedQuality"][i].GetInt() + 33);
+	}
+	string_quality[size_seq] = '\0';
+	
+	return string_quality;
+}
+
+int get_size_cigar(int id)
+{
+	return alignments[id]["alignment"]["cigar"].Size();
+}
+
+int get_cigar(int id,char* operation, int* length_operation,int size)
+{
+	int j,i = 0;
+	char* operation_name;
+	//operation = (char*)malloc(size);
+	//length_operation = (int*)malloc(size*sizeof(int));
+	
+	for(i=0; i<size; i++)
+	{
+		length_operation[i] = alignments[id]["alignment"]["cigar"][i]["operationLength"].GetInt();
+		operation_name =(char*) alignments[id]["alignment"]["cigar"][i]["operation"].GetString();
+		for(j=0; j<9; j++)
+		{
+			if(strcmp(operation_name,operations_name[j])==0)
+			{
+				operation[i] = operations_char[j];
+				break;
+			}
+		}
+	}
+	
+	return 0;
+}
+
+int set_flag(int flag,int id)
+{
+	if(!alignments[id]["numberReads"].IsNull())
+	{
+		flag = flag | 1;
+	}
+	
+	if(alignments[id]["properPlacement"].GetBool())
+	{
+		flag = flag | (1<<1);
+	}
+	
+	if(alignments[id]["alignment"].IsNull())
+	{
+		flag = flag | (1<<2);
+	}else{
+		if(alignments[id]["alignment"]["position"]["reverseStrand"].GetBool())
+		{
+			flag = flag | (1<<4);
+		}
+	}
+	
+	if(alignments[id]["nextMatePosition"].IsNull())
+	{
+		flag = flag | (1<<3);
+	}else{
+		if(alignments[id]["nextMatePosition"]["reverseStrand"].GetBool())
+		{
+			flag = flag | (1<<5);
+		}
+	}
+
+	if(!alignments[id]["readNumber"].IsNull())
+	{
+		flag = flag | ((1<<6)|(1<<7));
+	}	
+	return flag;
 }

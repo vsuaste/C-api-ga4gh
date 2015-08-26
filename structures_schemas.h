@@ -22,6 +22,33 @@ typedef struct {
 } Variant;
 
 typedef struct {
+	char* id;
+	char* readGroupId;
+	char* fragmentName;
+	char properPlacement;
+	char duplicateFragment;
+	int numberReads;
+	int fragmentLength;
+	int readNumber;
+	char failedVendorQualityChecks;	
+	char secondaryAlignment;
+	char supplementaryAlignment;
+	char* alignedSequence;
+	char* alignedQuality;
+	char** info;
+	//GALinearAlignment
+	char* referenceName;
+	int mappingQuality;	
+	//GAPosition
+	unsigned long long position;	
+	unsigned long long nextMatePosition;
+	char* nextMateReferenceName;
+	//Cigar
+	char* operation;
+	int* lengthOperation;
+}read_alignment;
+
+typedef struct {
     char* name;
 	char* referenceName;
 	long int start;
