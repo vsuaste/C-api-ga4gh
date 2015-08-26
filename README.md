@@ -39,7 +39,7 @@ Run examples:
 *`./ga4gh-tools --server ebi search_callSets --variantSetIds EVAF00000003,EVAF00000004`*
 - searchReads
 
- *`./ga4gh-tools --server ga4gh search_reads -r low-coverage:HG00096.mapped.ILLUMINA.bwa.GBR.low_coverage.20120522 `*
+ *`./ga4gh-tools --server ga4gh search_reads -r low-coverage:HG00096.mapped.ILLUMINA.bwa.GBR.low_coverage.20120522 -o test_file.sam`*
 
 For now if you add *` -d `* argument with any command, it will print the query response on console.
 Done for debugging purposes.
